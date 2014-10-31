@@ -70,11 +70,12 @@ task :build_tarball => [:build_check, :reprepro, :spec_prep, :spec_standalone] d
   Dir.mkdir('spec/fixtures/bin') unless File.exists?('spec/fixtures/bin')
   File.open('spec/fixtures/bin/install.sh', 'w') { |file| file.write(installsh_template.result(binding)); file.chmod(0755) }
 
-  readme   = 'README.md' if File.file?('README.md')
-  packages = 'packages' if File.exist?('packages')
-  examples = 'examples' if File.exist?('examples')
+  readme    = 'README.md' if File.file?('README.md')
+  changelog = 'CHANGELOG.md' if File.file?('CHANGELOG.md')
+  packages  = 'packages' if File.exist?('packages')
+  examples  = 'examples' if File.exist?('examples')
 
-  sh "tar cvzfh #{tarball} --owner=root --group=root #{readme} #{packages} #{examples} --exclude-from .gitignore --exclude .git --exclude #{apt_dir}/conf --exclude #{apt_dir}/lists --exclude #{apt_dir}/db -C spec/fixtures ENDUSER.md bin/ manifests/ --exclude manifests/site.pp modules/ --exclude modules/#{profile}/spec/fixtures/modules --exclude modules/#{profile}/packages --transform 's,^,#{base_path}/,'"
+  sh "tar cvzfh #{tarball} --owner=root --group=root #{readme} #{changelog} #{packages} #{examples} --exclude-from .gitignore --exclude .git --exclude #{apt_dir}/conf --exclude #{apt_dir}/lists --exclude #{apt_dir}/db -C spec/fixtures ENDUSER.md bin/ manifests/ --exclude manifests/site.pp modules/ --exclude modules/#{profile}/spec/fixtures/modules --exclude modules/#{profile}/packages --transform 's,^,#{base_path}/,'"
 
   puts "Tarball of module #{profile} built in #{tarball}."
 end
